@@ -8,6 +8,7 @@ import './medical-theme.css'
 import './language.css'
 import './hospital.css'
 import './ai-availability.css'
+import './assistant.css'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

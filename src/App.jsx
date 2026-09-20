@@ -5,7 +5,7 @@ import {
   Minus, Pause, Play, RefreshCw, ShieldCheck, Sparkles, Stethoscope,
   TrendingUp, UserRound, Users, X, Zap,
 } from 'lucide-react'
-import { getHospitalAvailability, predictWait } from './api'
+import { explainPrediction, getHospitalAvailability, predictWait } from './api'
 
 const baseQueue = [
   { token: 'A117', patient: 'Patient 1', status: 'Consulting', wait: '—' },
@@ -25,6 +25,7 @@ const navItems = [
   { id: 'queue', label: 'Live Queue', icon: Activity },
   { id: 'prediction', label: 'Prediction', icon: BrainCircuit },
   { id: 'notifications', label: 'Notifications', icon: Bell },
+  { id: 'assistant', label: 'AI Assistant', icon: Sparkles },
   { id: 'analytics', label: 'Analytics', icon: LineChart },
 ]
 
@@ -37,15 +38,15 @@ const hospitals = [
 
 const translations = {
   en: {
-    language: 'Language', home: 'Home', patient: 'Patient', queue: 'Live Queue', prediction: 'Prediction', notifications: 'Notifications', analytics: 'Analytics',
+    language: 'Language', home: 'Home', patient: 'Patient', queue: 'Live Queue', prediction: 'Prediction', notifications: 'Notifications', assistant: 'AI Assistant', analytics: 'Analytics',
     hospital: 'CityCare Hospital', heroEyebrow: 'SMART OPD FLOW · CITYCARE HOSPITAL', heroTitle: 'Your health,', heroTitleAccent: 'smarter.', heroDescription: 'AI-powered healthcare assistance for faster, simpler and more personalized health information, starting with a calmer OPD visit.', getStarted: 'Get started', explore: 'Explore services', trusted: 'Trusted for calmer hospital visits', featureEyebrow: 'ONE CLEAR VIEW', featureTitle: 'Healthcare support, thoughtfully connected.', featureDescription: 'Simple tools for patients, doctors and care teams, all in one clear experience.', why: 'Why QureAI?', footer: 'Making hospital queues predictable, transparent and patient-friendly.',
   },
   hi: {
-    language: 'भाषा', home: 'होम', patient: 'मरीज़', queue: 'लाइव कतार', prediction: 'अनुमान', notifications: 'सूचनाएँ', analytics: 'विश्लेषण',
+    language: 'भाषा', home: 'होम', patient: 'मरीज़', queue: 'लाइव कतार', prediction: 'अनुमान', notifications: 'सूचनाएँ', assistant: 'AI सहायक', analytics: 'विश्लेषण',
     hospital: 'सिटीकेयर अस्पताल', heroEyebrow: 'स्मार्ट ओपीडी · सिटीकेयर अस्पताल', heroTitle: 'आपका स्वास्थ्य,', heroTitleAccent: 'और स्मार्ट।', heroDescription: 'तेज़, आसान और आपकी ज़रूरत के अनुसार स्वास्थ्य जानकारी के लिए AI सहायता, एक शांत OPD अनुभव से शुरुआत।', getStarted: 'शुरू करें', explore: 'सेवाएँ देखें', trusted: 'शांत अस्पताल अनुभव के लिए', featureEyebrow: 'एक स्पष्ट दृश्य', featureTitle: 'स्वास्थ्य सहायता, एक साथ और सरल।', featureDescription: 'मरीज़ों, डॉक्टरों और देखभाल टीमों के लिए सरल और उपयोगी उपकरण।', why: 'QureAI क्यों?', footer: 'अस्पताल की कतारों को अनुमानित, पारदर्शी और मरीज़ों के अनुकूल बनाना।',
   },
   mr: {
-    language: 'भाषा', home: 'मुख्यपृष्ठ', patient: 'रुग्ण', queue: 'थेट रांग', prediction: 'अंदाज', notifications: 'सूचना', analytics: 'विश्लेषण',
+    language: 'भाषा', home: 'मुख्यपृष्ठ', patient: 'रुग्ण', queue: 'थेट रांग', prediction: 'अंदाज', notifications: 'सूचना', assistant: 'AI सहाय्यक', analytics: 'विश्लेषण',
     hospital: 'सिटीकेअर रुग्णालय', heroEyebrow: 'स्मार्ट ओपीडी · सिटीकेअर रुग्णालय', heroTitle: 'तुमचे आरोग्य,', heroTitleAccent: 'अधिक स्मार्ट.', heroDescription: 'जलद, सोपी आणि वैयक्तिक आरोग्य माहितीसाठी AI सहाय्य, अधिक शांत OPD अनुभवापासून सुरुवात.', getStarted: 'सुरुवात करा', explore: 'सेवा पहा', trusted: 'अधिक शांत रुग्णालयीन अनुभवासाठी', featureEyebrow: 'एक स्पष्ट दृश्य', featureTitle: 'आरोग्य सहाय्य, एकाच ठिकाणी.', featureDescription: 'रुग्ण, डॉक्टर आणि काळजी घेणाऱ्या टीमसाठी सोपी साधने.', why: 'QureAI का?', footer: 'रुग्णालयातील रांगा अंदाजे, पारदर्शक आणि रुग्णांसाठी सोप्या बनवणे.',
   },
 }
@@ -111,6 +112,7 @@ export default function App() {
       {page === 'queue' && <QueuePage queue={queue} ahead={ahead} wait={wait} refreshQueue={refreshQueue} navigate={navigate} />}
       {page === 'prediction' && <PredictionPage ahead={ahead} wait={wait} />}
       {page === 'notifications' && <NotificationPage ahead={ahead} wait={wait} navigate={navigate} notifications={notifications} setNotifications={setNotifications} />}
+      {page === 'assistant' && <AIAssistantPage ahead={ahead} wait={wait} hospital={hospital} availability={availability} />}
       {page === 'analytics' && <AnalyticsPage />}
     </main>
     <footer><div className="footer-inner"><div className="brand footer-brand"><span className="brand-mark"><Activity size={17} /></span><span><b>QureAI</b></span></div><p>{t.footer}</p><span className="footer-note">Prototype · Health Tech · Hackathon 2026</span></div></footer>
@@ -146,6 +148,24 @@ function QueuePage({ queue, ahead, wait, refreshQueue, navigate }) { const queue
 function PredictionPage({ ahead, wait }) { return <div className="page-container inner-page"><PageHeader eyebrow="PREDICTIVE INSIGHT" title="AI waiting-time prediction" description="A transparent estimate that adapts as your OPD queue moves." action={<span className="prototype-tag"><Sparkles size={14} /> Prototype model</span>} /><div className="prediction-layout"><div className="prediction-main"><div className="estimate-card"><div className="estimate-top"><span>ESTIMATED WAIT</span><span className="confidence"><span /> Live estimate</span></div><div className="estimate-value">{wait}<small>minutes</small></div><div className="estimate-range"><span>Likely range</span><b>{Math.max(4, wait - 4)} – {wait + 5} min</b></div><div className="estimate-progress"><div className="estimate-progress-track"><span style={{ width: `${Math.min(90, 100 - ahead * 2)}%` }} /></div><div><span>Queue position</span><b>{ahead} patients ahead</b></div></div></div><div className="factors-card"><div className="card-title"><div><div className="eyebrow">THE SIGNALS BEHIND IT</div><h2>Prediction factors</h2></div><BrainCircuit size={22} /></div><Factor label="Patients ahead" value={`${ahead} patients`} percent={Math.min(88, ahead * 6)} /><Factor label="Average consultation time" value="4.2 min" percent={57} /><Factor label="Current queue speed" value="Normal" percent={64} /><Factor label="Historical consultation pattern" value="Normal" percent={48} /></div></div><div className="prediction-aside"><div className="formula-card"><div className="eyebrow">HOW IT WORKS</div><h3>A useful estimate, built from real signals.</h3><div className="formula"><span>{ahead} patients</span><Minus size={15} /><span>4.2 min avg.</span><ArrowRight size={16} /><b>{ahead * 4.2 > 0 ? Math.round(ahead * 4.2) : 0} min</b></div><p>We then adjust this base with queue speed, historical consultation duration and current OPD load.</p></div><div className="chart-card"><div className="card-title"><div><div className="eyebrow">RECENT CONSULTATIONS</div><h3>Duration trend</h3></div><TrendingUp size={19} /></div><MiniChart /><div className="chart-labels"><span>A117</span><span>A118</span><span>A119</span><span>A120</span><span>A121</span><span>A122</span></div></div><div className="prototype-note"><ShieldCheck size={16} /><span>Prototype estimation only. This is not medically validated and should not be used for urgent decisions.</span></div></div></div></div> }
 function Factor({ label, value, percent }) { return <div className="factor"><div><span>{label}</span><b>{value}</b></div><div className="factor-bar"><span style={{ width: `${percent}%` }} /></div></div> }
 function MiniChart() { return <div className="mini-chart"><svg viewBox="0 0 420 110" preserveAspectRatio="none"><path d="M0 79 C30 75, 45 38, 72 52 S118 77, 140 52 S188 27, 212 45 S250 75, 278 58 S314 36, 340 45 S380 76, 420 21" fill="none" stroke="#4665e8" strokeWidth="3" /><path d="M0 79 C30 75, 45 38, 72 52 S118 77, 140 52 S188 27, 212 45 S250 75, 278 58 S314 36, 340 45 S380 76, 420 21 V110 H0Z" fill="url(#chartFill)" opacity=".25" /><defs><linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#6c7ff2" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></linearGradient></defs></svg></div> }
+
+function AIAssistantPage({ ahead, wait, hospital, availability }) {
+  const [question, setQuestion] = useState('Why is my estimated wait about this long?')
+  const [answer, setAnswer] = useState('')
+  const [loading, setLoading] = useState(false)
+  const askAssistant = async (event) => {
+    event?.preventDefault()
+    setLoading(true)
+    const payload = { patients_ahead: ahead, average_consultation_minutes: 4.2, doctor_available: true, queue_movement: 1, queue_speed: 'normal', opd_load: availability?.load === 'Busy' ? 'high' : 'normal' }
+    try {
+      const result = await explainPrediction(payload)
+      setAnswer(`${result.text} ${question.toLowerCase().includes('hospital') ? `${hospital.name} currently has ${availability?.doctors_available || 0} doctors available, with the next checkup slot at ${availability?.next_slot || 'the next available time'}.` : ''}`)
+    } catch {
+      setAnswer(`You have ${ahead} patients ahead and the current estimate is about ${wait} minutes. The estimate uses queue position, a 4.2-minute average consultation, and current queue movement. ${hospital.name} has ${availability?.doctors_available || 0} doctors available today. This is a prototype estimate, not medical advice.`)
+    } finally { setLoading(false) }
+  }
+  return <div className="page-container inner-page"><PageHeader eyebrow="QUREAI TOOL" title="Ask QureAI." description="Get a simple explanation of your queue, hospital availability, and next step." action={<span className="prototype-tag"><Sparkles size={14} /> AI assistant</span>} /><div className="assistant-layout"><div className="assistant-card"><div className="assistant-orb"><Sparkles size={23} /></div><div className="assistant-intro"><h2>Your OPD companion</h2><p>Ask about your estimated wait or today’s hospital availability. QureAI uses live demo queue signals to keep the answer grounded.</p></div><div className="suggested-prompts"><button onClick={() => setQuestion('Why is my estimated wait about this long?')}>Why is my wait this long?</button><button onClick={() => setQuestion('What is available at this hospital today?')}>What is available today?</button><button onClick={() => setQuestion('When should I return near my turn?')}>When should I return?</button></div><form className="assistant-form" onSubmit={askAssistant}><textarea value={question} onChange={(event) => setQuestion(event.target.value)} aria-label="Ask QureAI a question" rows="3" /><button className="button primary" type="submit" disabled={loading}>{loading ? 'Thinking...' : 'Ask QureAI'} <ArrowRight size={17} /></button></form>{answer && <div className="assistant-answer"><div className="answer-heading"><span><Sparkles size={15} /> QureAI response</span><span className="answer-live">Prototype AI</span></div><p>{answer}</p></div>}</div><div className="assistant-context"><div className="eyebrow">CURRENT CONTEXT</div><h3>{hospital.name}</h3><span className="context-city">{hospital.city} · General Medicine</span><div className="context-grid"><div><b>{ahead}</b><span>patients ahead</span></div><div><b>{wait} min</b><span>estimated wait</span></div><div><b>{availability?.doctors_available || '—'}</b><span>doctors available</span></div><div><b>{availability?.next_slot || '—'}</b><span>next checkup slot</span></div></div><div className="prototype-note"><ShieldCheck size={16} /><span>QureAI provides prototype queue information only. It does not diagnose conditions or replace a clinician.</span></div></div></div></div>
+}
 
 function NotificationPage({ ahead, wait, navigate, notifications, setNotifications }) { const approaching = ahead <= 3; return <div className="page-container inner-page"><PageHeader eyebrow="PATIENT UPDATES" title="Your notifications" description="Quiet, useful updates that help you decide when to head back to the OPD." action={<button className={`toggle ${notifications ? 'on' : ''}`} onClick={() => setNotifications(!notifications)}><span />{notifications ? 'Notifications on' : 'Notifications off'}</button>} /><div className="notification-layout"><div className="notification-panel"><div className="notification-panel-head"><span className="notification-bell"><BellRing size={21} /></span><div><span className="eyebrow">SMART ALERT</span><h2>{approaching ? 'Your turn is approaching!' : 'You’re on the list.'}</h2></div><span className="notification-time">Now</span></div><p>Only <b>{Math.max(3, ahead)} patients</b> are ahead of you in the General Medicine queue.</p><div className="alert-estimate"><span>Estimated waiting time</span><strong>{approaching ? '8–12' : `${Math.max(8, wait - 3)}–${wait + 4}`} <small>minutes</small></strong></div><div className="notification-actions"><Button onClick={() => navigate('queue')} icon={Activity}>View queue</Button><Button onClick={() => {}} variant="secondary" icon={X}>Dismiss</Button></div></div><div className="notification-side"><div className="eyebrow">UPDATES YOU’LL RECEIVE</div><div className="update-preference"><div className="preference-icon"><Clock3 size={17} /></div><div><b>Turn approaching</b><span>When 3 patients are ahead</span></div><Check size={17} className="preference-check" /></div><div className="update-preference"><div className="preference-icon"><MessageCircle size={17} /></div><div><b>Queue movement</b><span>When the current token changes</span></div><Check size={17} className="preference-check" /></div><div className="notification-footnote"><Bell size={15} /> Notifications are simulated for this demo.</div></div></div></div> }
 
