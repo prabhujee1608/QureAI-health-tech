@@ -1,0 +1,52 @@
+:root {
+  color: #edf3ff;
+  background: #0b1324;
+  --ink: #edf3ff;
+  --muted: #a4b0c5;
+  --line: #263650;
+  --surface: #131f35;
+  --lavender: #202b55;
+  --mint: #153b3b;
+  --peach: #402b2d;
+}
+
+body { background: #0b1324; }
+.app-shell { background: radial-gradient(circle at 82% 8%, rgba(72, 91, 180, .14), transparent 28rem), #0b1324; }
+.topbar { background: rgba(11, 19, 36, .86); border-bottom-color: rgba(72, 91, 133, .42); }
+.brand, .main-nav button { color: #dce6fb; }
+.main-nav button { color: #8998b5; }
+.main-nav button:hover, .main-nav button.active { color: #9eafff; }
+.hospital-label, .icon-button { color: #a4b0c5; }
+.brand-mark { background: #202d5c; color: #9eafff; }
+.hero:before { background: radial-gradient(circle, rgba(65, 83, 171, .28) 0%, rgba(11, 19, 36, 0) 68%); }
+.hero-lede, .section-heading > p, .feature-card p, .step p, .page-header p { color: #a4b0c5; }
+.dashboard-preview, .feature-card, .patient-token-card, .checkin-form, .next-steps, .queue-board, .factors-card, .chart-card, .notification-panel, .notification-side, .stat-card, .admin-table-wrap, .analytics-card { background: rgba(19, 31, 53, .9); border-color: #263650; box-shadow: 0 18px 50px rgba(0, 0, 0, .2); }
+.preview-top, .board-foot, .admin-table th { background: #101b2f; }
+.preview-content, .feature-card, .comparison-card.traditional { color: #edf3ff; }
+.mini-greeting h3, .feature-card h3, .step h3, .comparison-card h3, .page-header h1, .card-title h2, .card-title h3, .board-header h2, .admin-toolbar h2, .notification-panel h2, .next-steps h3, .form-header h3, .form-aside h3 { color: #edf3ff; }
+.muted, .row-patient, .stat-label, .token-details span, .token-prediction span, .queue-summary span, .queue-summary > div > span, .row-wait, .board-date, .updated-line, .footer-inner p { color: #99a8c0; }
+.mini-stats { border-bottom-color: #263650; }
+.progress, .factor-bar, .duration-list i { background: #263650; }
+.why-section { background: #111c31; }
+.comparison-card.traditional { border-color: #263650; }
+.traditional ul, .comparison-card ul { color: #a4b0c5; }
+.smart { background: #263a99; }
+.form-grid input, .form-grid select { background: #0f1a2e; color: #edf3ff; border-color: #31425f; }
+.form-grid input::placeholder { color: #7788a5; }
+.token-prediction, .alert-estimate { background: #18264a; }
+.queue-summary, .current-token, .formula, .prototype-tag, .staff-chip, .date-chip, .toggle { background: #131f35; border-color: #263650; color: #c4d0e6; }
+.queue-row { border-bottom-color: #22314a; }
+.queue-row.user-row { background: #1a2b5c; color: #dfe6ff; }
+.queue-row.consulting-row { background: #122e31; }
+.row-status, .table-status, .row-patient { color: #a4b0c5; }
+.you-pill { background: #263a78; color: #c4d0ff; }
+.estimate-progress-track { background: rgba(255,255,255,.18); }
+.form-aside, .estimate-card, .smart { box-shadow: 0 18px 42px rgba(0, 0, 0, .25); }
+.form-aside { background: #263b9e; }
+.form-disclaimer, .prototype-note, .admin-disclaimer, .notification-footnote { color: #91a0b8; }
+.footer-note { color: #8392ad; }
+footer { background: #070e1c; }
+
+@media (max-width: 700px) {
+  .main-nav { background: #101b2f; border-bottom-color: #263650; }
+}
